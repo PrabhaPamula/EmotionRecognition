@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js">
+    </script>
+    <title>Document</title>
+</head>
+<body>
+
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid justify-content-center">
+          <a class="navbar-brand"  href="#"><h3>Speech Emotion Recognition</h3></a>
+        </div>
+    </nav>
+
+    <div class="bg_container">
+        <div class="about bg_content">
+            <h1>About</h1>
+            <p>
+                We developed a Speech Emotion Recognition System.
+                In this<br/> system user can upload there audio file to predict the emotion.<br/>
+                This system not only predicts the emotion but also shows the <br/>percentage 
+                of emotion in the audio with the help of a graph.
+            </p> 
+            <!--<a href="/detection" class="btn btn-primary" role="button" data-bs-toggle="button">Predict Emotion</a>-->
+        </div>
+        <div class="bg_content">
+            <img class="bg_image" src="{{ url_for('static', filename='img2.png') }}" height="450px" width="450px"/>
+        </div>
+    </div>
+
+
+    <h2 style="text-align: center; margin-top: 30px;">Emotion Detection</h2>
+    <div class="detection">
+        
+
+        <form class="p-3 text-center" action="/", method="post" enctype="multipart/form-data">
+            <input class="form-control ip_style" type="file" name="audfile" >
+            <input class="btn btn-primary mt-3" type="submit" value="predict emotion" >
+        </form>
+        <center>
+            <div style = "width: 60%;">
+                <canvas id= 'myChart'>
+                </canvas>
+            </div>
+        </center>
+        {% if prediction %}
+            <p class="text-center p-style"><h1>Emotion : {{prediction}}</h1></p>
+            <!-- <p class="text-center">Probabilities: {{prob}}</p> -->
+            <script>
+                let myChart = document.getElementById('myChart').getContext('2d')
+                let ProbChart = new Chart(myChart, {
+                    type : 'bar',
+                    data : {
+                        labels : ["Angry","Sad","Neutral","Happy"],
+                        datasets : [{
+                            label : 'Probability %',
+                            data: ['{{prob[0]}}','{{prob[1]}}','{{prob[2]}}','{{prob[3]}}'],
+                            // data : '{{prob}}',
+                            backgroundColor : ['red','blue','green','magenta'],
+                            borderWidth : 1,
+                            boederColor : 'gray',
+                            hoverBorderWidth : 1,
+                            hoverBorderColor : 'gray',
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                min: 0,
+                                max: 100,
+                                ticks: {
+                                    stepSize: 5,
+                                }
+                            }
+                        }
+                    }
+                })
+                </script>
+        {% endif %}
+
+        
+    </div>
+
+    
+    
+    
+
+</body>
+</html>
